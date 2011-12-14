@@ -9,73 +9,132 @@ if not pygame.mixer: print 'Warning, sound disabled'
 
 # set up pygame
 class MathLegal:
-    """A Classe principal Mathlegal - Esta classe manipula o principal 
-    inicializacao e criacao do jogo."""
-    
-    def __init__(self, width=640,height=480):
-        """Inicializa"""
-        """Inicializa PyGame"""
-        pygame.init()
-	mainClock = pygame.time.Clock()
-	pygame.mouse.set_visible(True)
-        """Seta o tamanho do janela"""
-        self.width = width
-        self.height = height
-        """Cria a tela"""
-        self.screen = pygame.display.set_mode((self.width, self.height), 0, 32)
-	pygame.display.set_caption('Matematica Legal')
+	"""A Classe principal Mathlegal - Esta classe manipula o principal
+	inicializacao e criacao do jogo."""
+
+	def __init__(self, width=640,height=480):
+		"""Inicializa"""
+		"""Inicializa PyGame"""
+		pygame.init()
+		self.mainClock = pygame.time.Clock()
+		font = pygame.font.SysFont('Arial', 48)
+		pygame.mouse.set_visible(True)
+		"""Seta o tamanho do janela"""
+		self.background = pygame.image.load("img/fundo.png")
+		self.backgroundRect = self.background.get_rect()
+		self.size = (width, height) = self.background.get_size()
+
+		self.logo1 = pygame.image.load("img/logo1.png")
+		self.logo1Rect = self.logo1.get_rect()
+		self.logopos = self.logo1.get_rect(centerx=self.background.get_width() / 2)
+		"""Cria a tela"""
+		self.screen = pygame.display.set_mode((self.size), 0, 32)
+		pygame.display.set_caption('Matematica Legal')
+			
+
+		# set up the player and food data structure
+		RESULT = True
+		START = True
+		START2 = True
+		QUIZ = True
+		FINAL = False
+
+		# Listas
+		desafio = []
+		fichas = []
+		pre_result = []
+		self.img_r = []
+		self.img_g = []
+		self.img_b = []
+		self.img_y = []
 	
+		# Numeros vermelhos 
+		self.img_r.append({'img':self.rescale("img/r-0.png"), 'cor':'red', 'num':0})
+		self.img_r.append({'img':self.rescale("img/r-1.png"), 'cor':'red', 'num':1})
+		self.img_r.append({'img':self.rescale("img/r-2.png"), 'cor':'red', 'num':2})
+		self.img_r.append({'img':self.rescale("img/r-3.png"), 'cor':'red', 'num':3})
+		self.img_r.append({'img':self.rescale("img/r-4.png"), 'cor':'red', 'num':4})
+		self.img_r.append({'img':self.rescale("img/r-5.png"), 'cor':'red', 'num':5})
+		self.img_r.append({'img':self.rescale("img/r-6.png"), 'cor':'red', 'num':6})
+		self.img_r.append({'img':self.rescale("img/r-7.png"), 'cor':'red', 'num':7})
+		self.img_r.append({'img':self.rescale("img/r-8.png"), 'cor':'red', 'num':8})
+		self.img_r.append({'img':self.rescale("img/r-9.png"), 'cor':'red', 'num':9})
 
-    def MainLoop(self):
-        """Este eh o loop principal do jogo"""
-	self.background = pygame.Surface(self.screen.get_size())
-        self.background = self.background.convert()
-        self.background.fill((0,255,0))
-	
-	"""Draw the blocks onto the background, since they only need to be 
-        drawn once"""
-        self.screen.draw(self.background)
-	
-	pygame.display.flip()
-	sleep(10)
+		# Numeros verdes
+		self.img_g.append({'img':self.rescale("img/g-0.png"), 'cor':'green', 'num':0})
+		self.img_g.append({'img':self.rescale("img/g-1.png"), 'cor':'green', 'num':1})
+		self.img_g.append({'img':self.rescale("img/g-2.png"), 'cor':'green', 'num':2})
+		self.img_g.append({'img':self.rescale("img/g-3.png"), 'cor':'green', 'num':3})
+		self.img_g.append({'img':self.rescale("img/g-4.png"), 'cor':'green', 'num':4})
+		self.img_g.append({'img':self.rescale("img/g-5.png"), 'cor':'green', 'num':5})
+		self.img_g.append({'img':self.rescale("img/g-6.png"), 'cor':'green', 'num':6})
+		self.img_g.append({'img':self.rescale("img/g-7.png"), 'cor':'green', 'num':7})
+		self.img_g.append({'img':self.rescale("img/g-8.png"), 'cor':'green', 'num':8})
+		self.img_g.append({'img':self.rescale("img/g-9.png"), 'cor':'green', 'num':9})
 
-	
-#pygame.init()
-#mainClock = pygame.time.Clock()
-#pygame.mouse.set_visible(True)
 
-# set up the window
-#WINDOWWIDTH = 640
-#WINDOWHEIGHT = 480
-#windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)
-#pygame.display.set_caption('Matematica Legal')
+		# Numeros azuis
+		self.img_b.append({'img':self.rescale("img/b-1.png"), 'cor':'blue', 'num':0})
+		self.img_b.append({'img':self.rescale("img/b-2.png"), 'cor':'blue', 'num':1})
+		self.img_b.append({'img':self.rescale("img/b-3.png"), 'cor':'blue', 'num':2})
+		self.img_b.append({'img':self.rescale("img/b-4.png"), 'cor':'blue', 'num':3})
+		self.img_b.append({'img':self.rescale("img/b-5.png"), 'cor':'blue', 'num':4})
+		self.img_b.append({'img':self.rescale("img/b-6.png"), 'cor':'blue', 'num':5})
+		self.img_b.append({'img':self.rescale("img/b-7.png"), 'cor':'blue', 'num':6})
+		self.img_b.append({'img':self.rescale("img/b-8.png"), 'cor':'blue', 'num':7})
+		self.img_b.append({'img':self.rescale("img/b-9.png"), 'cor':'blue', 'num':9})
 
-# set up the colors
-#BLACK = (0, 0, 0)
-#GREEN = (0, 255, 0)
-#WHITE = (255, 255, 255)
-#BLUE = (0, 0, 255)
-#RED = (255, 0, 0)
-#YELLOW = (0, 255, 255)
+		# Numeros amarelos
+		self.img_y.append({'img':self.rescale("img/y-0.png"), 'cor':'yellow', 'num':0})
+		self.img_y.append({'img':self.rescale("img/y-1.png"), 'cor':'yellow', 'num':1})
+		self.img_y.append({'img':self.rescale("img/y-2.png"), 'cor':'yellow', 'num':2})
+		self.img_y.append({'img':self.rescale("img/y-3.png"), 'cor':'yellow', 'num':3})
+		self.img_y.append({'img':self.rescale("img/y-4.png"), 'cor':'yellow', 'num':4})
+		self.img_y.append({'img':self.rescale("img/y-5.png"), 'cor':'yellow', 'num':5})
+		self.img_y.append({'img':self.rescale("img/y-6.png"), 'cor':'yellow', 'num':6})
+		self.img_y.append({'img':self.rescale("img/y-7.png"), 'cor':'yellow', 'num':7})
+		self.img_y.append({'img':self.rescale("img/y-8.png"), 'cor':'yellow', 'num':8})
+		self.img_y.append({'img':self.rescale("img/y-9.png"), 'cor':'yellow', 'num':9})
 
-#font = pygame.font.SysFont('Arial', 48)
+	def rescale(self, img):
+		self.img = pygame.image.load(img)
+		return pygame.transform.scale(self.img, (50, 50))
 
-# set up the player and food data structure
-#RESULT = True
-#START = True
-#START2 = True
-#QUIZ = True
-#FINAL = False
+	def init_screen(self):
+		#self.screen.blit(self.img_b[0], ((self.size[0] / 3) - 100, (self.size[1] / 3)))
+		self.drawImg(self.img_r[0]['img'], ((self.size[0] / 3) - 100), (self.size[1] / 3))
+		self.drawImg(self.img_g[1]['img'], ((self.size[0] / 3)), (self.size[1] / 3))
+		self.drawImg(self.img_b[2]['img'], ((self.size[0] / 3) + 100), (self.size[1] / 3))
 
-#desafio = []
-#fichas = []
-#pre_result = []
+	def MainLoop(self):
+		"""Este eh o loop principal do jogo"""
+		"""Draw the blocks onto the background, since they only need to be drawn once"""
+		self.screen.blit(self.background, self.backgroundRect)
+		self.screen.blit(self.logo1, self.logopos)
+		
+		self.init_screen()
+		pygame.display.flip()
 
-#def drawText(text, font, surface, x, y,f,b):
-#    textobj = font.render(text, 1, f, b)
-#    textrect = textobj.get_rect()    
-#    textrect.topleft = (x, y)
-#    return textobj, textrect, text
+		# run the game loop
+		while True:
+		# check for events
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					pygame.quit()
+					sys.exit()
+		
+	def drawImg(self, img, x, y):
+		self.img = img
+		self.imgRect = self.img.get_rect()
+		self.imgRect.topleft = (x, y)
+		self.screen.blit(self.img, self.imgRect)
+		return self.img, self.imgRect, 
+
+	def drawText(text, font, surface, x, y,f,b):
+		textobj = font.render(text, 1, f, b)
+		textrect = textobj.get_rect()
+		textrect.topleft = (x, y)
+		return textobj, textrect, text
 
 #for i in range(7):
 #    x, y, t = drawText('8', font, windowSurface, windowSurface.get_rect().centerx, 160, GREEN, WHITE )
@@ -102,8 +161,9 @@ class MathLegal:
 #    random.shuffle(fichas)
     
 
-#def init_screen():
+#	def init_screen():
 #    x, y, t = drawText('7', font, windowSurface, (WINDOWWIDTH / 3) - 100, (WINDOWHEIGHT / 3),(0,255,0),(255,255,255))
+#		self.screen.blit(img[0], (self.size[0] / 3) - 100, (self.size[1] / 3)) 
 #    desafio.append({'num':t, 'textrect':y})
 #    windowSurface.blit(x,y)
 #    pygame.display.update()
@@ -273,17 +333,18 @@ class MathLegal:
 
 
 # run the game loop
-#while True:
-#    # check for events
- #   for event in pygame.event.get():
- #       if event.type == QUIT:
-  #          pygame.quit()
-  #          sys.exit()
-        
-  #      if event.type == MOUSEBUTTONUP:
- #           print("Mouse call!")
- #           test_click(event.pos[0], event.pos[1])            
- #           
+#	while True:
+		# check for events
+#			for event in pygame.event.get():
+#				if event.type == QUIT:
+#					pygame.quit()
+#					sys.exit()
+					
+#			if event.type == MOUSEBUTTONUP:
+#				print("Mouse call!")
+				#test_click(event.pos[0], event.pos[1])
+
+# #           
     
     # draw the black background onto the surface
  #   windowSurface.fill(BLACK)
